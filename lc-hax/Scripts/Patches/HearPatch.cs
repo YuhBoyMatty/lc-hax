@@ -12,17 +12,6 @@ sealed class HearPatch {
 
         __instance.allPlayerScripts.ForEach(player => {
             AudioSource currentVoiceChatAudioSource = player.currentVoiceChatAudioSource;
-
-            if (!currentVoiceChatAudioSource.TryGetComponent(out AudioLowPassFilter audioLowPassFilter)) {
-                return;
-            }
-
-            if (!currentVoiceChatAudioSource.TryGetComponent(out AudioHighPassFilter audioHighPassFilter)) {
-                return;
-            }
-
-            audioLowPassFilter.enabled = false;
-            audioHighPassFilter.enabled = false;
             currentVoiceChatAudioSource.panStereo = 0.0f;
             soundManager.playerVoicePitchTargets[player.playerClientId] = 1.0f;
             soundManager.SetPlayerPitch(1.0f, unchecked((int)player.playerClientId));
@@ -30,6 +19,14 @@ sealed class HearPatch {
             currentVoiceChatAudioSource.spatialBlend = 0.0f;
             player.currentVoiceChatIngameSettings.set2D = true;
             player.voicePlayerState.Volume = 1.0f;
+
+            if (!currentVoiceChatAudioSource.TryGetComponent(out AudioLowPassFilter audioLowPassFilter)) {
+                audioLowPassFilter.enabled = false;
+            }
+
+            if (!currentVoiceChatAudioSource.TryGetComponent(out AudioHighPassFilter audioHighPassFilter)) {
+                audioHighPassFilter.enabled = false;
+            }
         });
     }
 }
